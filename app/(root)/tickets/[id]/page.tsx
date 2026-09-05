@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
-import { assignTicketToMe, getTicketById } from "@/lib/actions/ticket.actions";
+import { getTicketById } from "@/lib/actions/ticket.actions";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
