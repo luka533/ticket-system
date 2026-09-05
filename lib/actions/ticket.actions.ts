@@ -29,6 +29,12 @@ export async function getCurrentUserTickets() {
 }
 
 export async function getTicketById(ticketId: string) {
+  const session = await auth();
+
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
   const ticket = await prisma.ticket.findFirst({
     where: {
       id: ticketId,
@@ -117,8 +123,8 @@ export async function closeTicket(ticketId: string) {
   });
 
   if (
-    !session?.user?.id &&
-    session?.user.role !== "SUPPORT" &&
+    !session?.user?.id ||
+    session?.user.role !== "SUPPORT" ||
     session?.user.id !== ticket?.assignedTo?.id
   ) {
     throw new Error("Unauthorized");
@@ -142,7 +148,7 @@ export async function closeTicket(ticketId: string) {
 export async function deleteTicket(ticketId: string) {
   const session = await auth();
 
-  if (!session?.user?.id && session?.user.role !== "ADMIN") {
+  if (!session?.user?.id || session?.user.role !== "ADMIN") {
     throw new Error("Unauthorized");
   }
 

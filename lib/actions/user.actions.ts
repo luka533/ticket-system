@@ -131,6 +131,12 @@ export async function getAdminUsers({
   role: "all" | "USER" | "SUPPORT" | "ADMIN";
   page: number;
 }) {
+  const session = await auth();
+
+  if (!session?.user?.id || session.user.role !== "ADMIN") {
+    throw new Error("Unauthorized");
+  }
+
   const searchFilter: UserWhereInput = {
     name: {
       contains: search,

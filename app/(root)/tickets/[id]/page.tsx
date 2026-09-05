@@ -81,7 +81,7 @@ async function TicketDetailsPage({
 
           {role === "ADMIN" && <DeleteTicketButton ticketId={ticket.id} />}
 
-          {role === "USER" && session.user.role === ticket.createdBy.id && (
+          {role === "USER" && session.user.id === ticket.createdById && (
             <CancelTicketButton ticketId={ticket.id} />
           )}
 
