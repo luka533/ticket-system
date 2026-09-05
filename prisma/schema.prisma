@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(uuid()) @db.Uuid
+  email    String   @unique
+  name     String
+  password String
+  room     String?
+  role     UserRole @default(USER)
+
+  createdTickets  Ticket[] @relation("CreatedTickets")
+  assignedTickets Ticket[] @relation("AssignedTickets")
+  assets          Asset[]  @relation("AssignedAssets")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ticket {
+  id          String       @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  // type        TicketType
+  status      TicketStatus @default(OPEN)
+
+  createdById String @db.Uuid
+  createdBy   User   @relation("CreatedTickets", fields: [createdById], references: [id], onDelete: Restrict)
+
+  // for support staff to assign themselves to tickets
+  assignedToId String? @db.Uuid
+  assignedTo   User?   @relation("AssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  relatedAssetId String? @db.Uuid
+  relatedAsset   Asset?  @relation(fields: [relatedAssetId], references: [id], onDelete: SetNull)
+
+  closedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdById])
+  @@index([closedAt])
+  @@index([assignedToId])
+  @@index([relatedAssetId])
+}
+
+model Asset {
+  id           String      @id @default(uuid()) @db.Uuid
+  assetNumber  Int         @unique @default(autoincrement())
+  type         AssetType
+  manufacturer String
+  model        String
+  serialNumber String?     @unique
+  status       AssetStatus @default(AVAILABLE)
+
+  assignedToId String? @db.Uuid
+  assignedTo   User?   @relation("AssignedAssets", fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  tickets Ticket[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([assignedToId])
+}
+
+enum UserRole {
+  USER
+  SUPPORT
+  ADMIN
+}
+
+// enum TicketType {
+//   // incident, e.g. system crash, network outage, etc. -> user has an issue
+//   INCIDENT
+//   // service request, e.g., new hardware, software installation, etc. -> user requests a service
+//   SERVICE_REQUEST
+// }
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+  CANCELED
+}
+
+enum AssetType {
+  LAPTOP
+  DESKTOP
+  MONITOR
+  PRINTER
+  PHONE
+  OTHER
+}
+
+enum AssetStatus {
+  AVAILABLE
+  IN_USE
+  REPAIR
+  RETIRED
+}
