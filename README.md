@@ -10,6 +10,28 @@ Employees can create support tickets and view their assigned devices. Support st
 
 During an internship at a local town hall, I saw how IT requests and company devices were managed through an internal system. This inspired me to build my own simplified helpdesk and asset management application.
 
+## Live Demo
+
+https://ticket-system-mu-tawny.vercel.app
+
+## Demo Accounts
+
+User:
+
+`alice@example.com`
+
+Support:
+
+`daniel.support@example.com`
+
+Admin:
+
+`admin@example.com`
+
+Password for all demo accounts:
+
+`Password123!`
+
 ## Screenshots
 
 ### User Dashboard
@@ -53,21 +75,3 @@ During an internship at a local town hall, I saw how IT requests and company dev
 - React Hook Form
 - Zod
 - Recharts
-
-## Demo Accounts
-
-User:
-
-`alice@example.com`
-
-Support:
-
-`daniel.support@example.com`
-
-Admin:
-
-`admin@example.com`
-
-Password for all demo accounts:
-
-`Password123!`
